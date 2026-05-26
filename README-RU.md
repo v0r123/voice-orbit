@@ -101,7 +101,7 @@ BUILD-TEST-VERSIONS.bat
 
 ## 📄 Лицензия
 
-[MIT](LICENSE) © 2024
+[MIT](LICENSE) © 2026
 
 ---
 
