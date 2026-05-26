@@ -428,6 +428,30 @@ export function setupIpcHandlers(
     } catch { return null }
   })
 
+  // ── Persistent settings ──────────────────────────────────────
+  const settingsPath = path.join(app.getPath('userData'), 'settings.json')
+
+  ipcMain.handle('settings-load', () => {
+    try {
+      if (fs.existsSync(settingsPath)) {
+        return JSON.parse(fs.readFileSync(settingsPath, 'utf8'))
+      }
+    } catch (err: any) {
+      console.warn('[Settings] Failed to load:', err.message)
+    }
+    return null
+  })
+
+  ipcMain.handle('settings-save', (_e, data: object) => {
+    try {
+      fs.writeFileSync(settingsPath, JSON.stringify(data, null, 2), 'utf8')
+      return true
+    } catch (err: any) {
+      console.warn('[Settings] Failed to save:', err.message)
+      return false
+    }
+  })
+
   // Open file in explorer
   ipcMain.on('file-show-in-folder', (_e, filePath: string) => {
     shell.showItemInFolder(filePath)

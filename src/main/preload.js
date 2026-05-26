@@ -47,6 +47,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onUpdateDiagnostic,
 
   getAppVersion: () => ipcRenderer.invoke('get-app-version'),
+  settingsLoad: () => ipcRenderer.invoke('settings-load'),
+  settingsSave: (data) => ipcRenderer.invoke('settings-save', data),
   getSelfExecutable: () => ipcRenderer.invoke('get-self-executable'),
   applyUpdate: (zipPath) => ipcRenderer.invoke('apply-update', zipPath),
   downloadUpdate: (peerIp, peerFilePort, fileId, fileName, fileSize) =>

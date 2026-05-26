@@ -72,6 +72,7 @@ interface AppStore {
   openOrCreateDm: (peerId: string, peerName: string) => string
   openOrCreateGroup: (peerIds: string[], peerNames: string[]) => string
   getOrCreateSession: (id: string) => ChatSession | undefined
+  loadSettings: () => Promise<void>
   clearCall: () => void
 }
 
@@ -300,6 +301,25 @@ export const useStore = create<AppStore>((set) => ({
   },
 
   getOrCreateSession: (id) => useStore.getState().chatSessions.get(id) as any,
+
+  // ── Persistence ───────────────────────────────────────────
+  loadSettings: async () => {
+    const saved = await window.electronAPI?.settingsLoad()
+    if (!saved) return
+    const defaults = useStore.getState().settings
+    // Restore settings
+    const merged = { ...defaults, ...saved.settings ?? saved }
+    useStore.setState({
+      settings:  merged,
+      selfName:  merged.userName  ?? defaults.userName,
+      selfColor: merged.userColor ?? defaults.userColor,
+    })
+    // Restore local nicknames
+    if (saved.nicknames && typeof saved.nicknames === 'object') {
+      useStore.setState({ localNicknames: new Map(Object.entries(saved.nicknames)) })
+    }
+    console.log('[Settings] Loaded from disk')
+  },
 
   updateSettings: (s) =>
     set((state) => ({

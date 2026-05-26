@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react'
+import { useCallback, useState, useEffect, useRef } from 'react'
 import { useDiscovery } from './hooks/useDiscovery'
 import { useWebRTC } from './hooks/useWebRTC'
 import { useStore } from './store'
@@ -80,6 +80,36 @@ export default function App() {
     calling: styles.dotCalling,
     'in-call': styles.dotInCall,
   }[store.status]
+
+  // Load persisted settings once on mount
+  useEffect(() => {
+    window.electronAPI?.settingsLoad().then(saved => {
+      if (!saved) return
+      const defaults = store.settings
+      const s = saved.settings ?? saved   // support both formats
+      const merged = { ...defaults, ...s }
+      useStore.getState().updateSettings(merged)
+      if (saved.nicknames && typeof saved.nicknames === 'object') {
+        useStore.setState({ localNicknames: new Map(Object.entries(saved.nicknames)) })
+      }
+      console.log('[Settings] Loaded from disk:', merged.theme, 'scale:', merged.uiScale)
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Auto-save settings + nicknames (debounced 800ms)
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    if (saveTimer.current) clearTimeout(saveTimer.current)
+    saveTimer.current = setTimeout(() => {
+      window.electronAPI?.settingsSave({
+        settings:  store.settings,
+        nicknames: Object.fromEntries(store.localNicknames),
+      })
+      console.log('[Settings] Saved to disk')
+    }, 800)
+    return () => { if (saveTimer.current) clearTimeout(saveTimer.current) }
+  }, [store.settings, store.localNicknames])
 
   // Apply theme on mount and when it changes
   useEffect(() => {

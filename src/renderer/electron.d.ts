@@ -27,6 +27,8 @@ declare global {
       onFileDownloadProgress(cb: (data: { fileId: string; progress: number }) => void): void
 
       getAppVersion(): Promise<string>
+      settingsLoad(): Promise<Record<string, any> | null>
+      settingsSave(data: Record<string, any>): Promise<boolean>
       applyUpdate(zipPath: string): Promise<{ ok: boolean; version?: string; error?: string }>
       buildAndRegisterUpdate(version: string): Promise<{ fileId: string; fileName: string; fileSize: number; version: string } | null>
       downloadUpdate(peerIp: string, peerFilePort: number, fileId: string, fileName: string, fileSize: number): Promise<{ ok: boolean; zipPath?: string; error?: string }>
