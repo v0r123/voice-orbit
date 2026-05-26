@@ -76,7 +76,7 @@ VoiceOrbit — **голосовой чат для LAN без серверов**,
 ## 🚀 Быстрый старт
 
 ```bash
-git clone https://github.com/your-username/voice-orbit.git
+git clone https://github.com/v0r123/voice-orbit.git
 cd voice-orbit
 npm install
 npm run dev
