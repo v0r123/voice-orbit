@@ -44,7 +44,7 @@ No servers. No accounts. No internet required.
 | ![Settings](docs/screenshots/settings.jpg) | ![Incoming](docs/screenshots/incoming.jpg) | ![Update](docs/screenshots/update.jpg) |
 
 
-```
+<!-- ```
 docs/
 └── screenshots/
     ├── canvas.jpg       ← orbital canvas with planets & rocket
@@ -53,7 +53,7 @@ docs/
     ├── settings.jpg     ← settings modal with theme picker
     ├── incoming.jpg     ← incoming call notification
     └── update.jpg       ← LAN auto-update banner
-```
+``` -->
 
 ---
 
