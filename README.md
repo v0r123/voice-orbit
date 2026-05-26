@@ -34,25 +34,25 @@ No servers. No accounts. No internet required.
 
 > *Place your screenshots in `docs/screenshots/` and uncomment the table below.*
 
-<!--
+
 | Orbital Canvas | Group Call | Chat Panel |
 |:-:|:-:|:-:|
-| ![Canvas](docs/screenshots/canvas.png) | ![Call](docs/screenshots/call.png) | ![Chat](docs/screenshots/chat.png) |
+| ![Canvas](docs/screenshots/canvas.jpg) | ![Call](docs/screenshots/call.jpg) | ![Chat](docs/screenshots/chat.jpg) |
 
 | Settings & Themes | Incoming Call | Update Notification |
 |:-:|:-:|:-:|
-| ![Settings](docs/screenshots/settings.png) | ![Incoming](docs/screenshots/incoming.png) | ![Update](docs/screenshots/update.png) |
--->
+| ![Settings](docs/screenshots/settings.jpg) | ![Incoming](docs/screenshots/incoming.jpg) | ![Update](docs/screenshots/update.jpg) |
+
 
 ```
 docs/
 └── screenshots/
-    ├── canvas.png       ← orbital canvas with planets & rocket
-    ├── call.png         ← group call participant panel
-    ├── chat.png         ← chat drawer with messages
-    ├── settings.png     ← settings modal with theme picker
-    ├── incoming.png     ← incoming call notification
-    └── update.png       ← LAN auto-update banner
+    ├── canvas.jpg       ← orbital canvas with planets & rocket
+    ├── call.jpg         ← group call participant panel
+    ├── chat.jpg         ← chat drawer with messages
+    ├── settings.jpg     ← settings modal with theme picker
+    ├── incoming.jpg     ← incoming call notification
+    └── update.jpg       ← LAN auto-update banner
 ```
 
 ---
