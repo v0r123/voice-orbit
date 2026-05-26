@@ -13,7 +13,7 @@
 [![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=flat-square&logo=windows)](https://www.microsoft.com/windows)
 [![License](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
 
-[English](#english) · [Русский](#russian)
+[English](#english) · [Русский](README-RU.md)
 
 </div>
 
