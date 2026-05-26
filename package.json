@@ -1,0 +1,73 @@
+{
+  "name": "voice-orbit",
+  "version": "1.0.0",
+  "description": "Local network voice chat with orbital UI",
+  "main": "dist/main/main/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:vite\" \"npm run dev:electron\"",
+    "dev:vite": "vite",
+    "dev:electron": "wait-on http://localhost:5173 && npm run build:main && electron .",
+    "dev:1": "concurrently \"npm run dev:vite\" \"npm run dev:e1\"",
+    "dev:e1": "wait-on http://localhost:5173 && npm run build:main && cross-env INSTANCE=1 electron .",
+    "dev:e2": "cross-env INSTANCE=2 electron .",
+    "dev:e3": "cross-env INSTANCE=3 electron .",
+    "test:multi": "concurrently \"npm run dev:vite\" \"npm run dev:electron\" \"npm run dev:e1\" \"npm run dev:e2\"",
+    "build": "npm run build:vite && npm run build:main",
+    "build:vite": "vite build",
+    "build:main": "tsc -p tsconfig.main.json && node scripts/copy-preload.js",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "build:update": "npm run build && node scripts/create-update-package.js",
+    "build:test-versions": "node scripts/build-test-versions.js"
+  },
+  "dependencies": {
+    "uuid": "^9.0.0",
+    "adm-zip": "^0.5.10"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@types/uuid": "^9.0.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "concurrently": "^8.0.0",
+    "cross-env": "^7.0.3",
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0",
+    "wait-on": "^7.0.0",
+    "zustand": "^4.0.0",
+    "archiver": "^6.0.0"
+  },
+  "build": {
+    "appId": "com.voiceorbit.app",
+    "productName": "VoiceOrbit",
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "dir",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ]
+  }
+}

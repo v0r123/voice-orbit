@@ -1,0 +1,62 @@
+:root {
+  --bg:          #080818;
+  --bg-title:    rgba(6,10,22,0.97);
+  --bg-panel:    rgba(8,14,30,0.92);
+  --bg-card:     rgba(255,255,255,0.05);
+  --bg-input:    rgba(255,255,255,0.05);
+  --accent:      #4488ff;
+  --accent-rgb:  68,136,255;
+  --accent2:     #44ffaa;
+  --text:        rgba(255,255,255,0.85);
+  --text-sub:    rgba(255,255,255,0.38);
+  --text-muted:  rgba(255,255,255,0.18);
+  --border:      rgba(80,140,255,0.15);
+  --border-soft: rgba(255,255,255,0.08);
+  --glow:        rgba(68,136,255,0.25);
+  --call-accept: #1e7e44;
+  --call-reject: #7e1e1e;
+  --orbit-sun:   #ffd700;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+body {
+  font-family: 'Exo 2', 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: white;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(80, 140, 255, 0.3);
+  border-radius: 2px;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+input, select {
+  font-family: inherit;
+}

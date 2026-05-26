@@ -1,0 +1,325 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg);
+  color: white;
+  overflow: hidden;
+  font-family: 'Exo 2', sans-serif;
+  user-select: none;
+}
+
+/* ── Title bar ── */
+.titleBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 40px;
+  background: var(--bg-title);
+  border-bottom: 1px solid rgba(var(--accent-rgb),0.1);
+  -webkit-app-region: drag;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.windowControls {
+  display: flex;
+  gap: 7px;
+  -webkit-app-region: no-drag;
+  position: relative;
+  z-index: 999;
+}
+
+.winBtn {
+  width: 14px; height: 14px;
+  border-radius: 50%; border: none;
+  cursor: pointer; transition: filter 0.15s;
+  -webkit-app-region: no-drag;
+  position: relative; z-index: 999;
+  pointer-events: all;
+}
+.winBtn:hover { filter: brightness(1.3) }
+.close    { background: #ff5f57 }
+.minimize { background: #ffbd2e }
+.maximize { background: #28ca42 }
+
+.appTitle {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.7);
+  -webkit-app-region: drag;
+}
+.titleGlyph { color: rgba(var(--accent-rgb),0.8); font-size: 16px }
+
+.titleRight {
+  display: flex; align-items: center; gap: 8px;
+  -webkit-app-region: no-drag;
+}
+
+.statusChip {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  font-size: 10px; color: rgba(255,255,255,0.5);
+  letter-spacing: 0.3px;
+}
+
+.statusDot {
+  width: 6px; height: 6px;
+  border-radius: 50%; flex-shrink: 0;
+}
+.dotSearching { background: #556688; animation: searchPulse 2s ease-in-out infinite }
+.dotReady     { background: var(--accent); box-shadow: 0 0 6px var(--accent) }
+.dotCalling   { background: #ffaa22; box-shadow: 0 0 6px #ffaa22; animation: searchPulse 0.8s ease-in-out infinite }
+.dotInCall    { background: #44ff88; box-shadow: 0 0 6px #44ff88 }
+
+@keyframes searchPulse {
+  0%, 100% { opacity: 1 }
+  50%       { opacity: 0.4 }
+}
+
+.audioTestBtn {
+  background: none; border: none;
+  color: rgba(255,255,255,0.35);
+  cursor: pointer; padding: 5px 6px;
+  border-radius: 6px; transition: all 0.2s;
+  -webkit-app-region: no-drag;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+.audioTestBtn:hover {
+  background: rgba(var(--accent-rgb),0.1);
+  color: rgba(100,220,140,0.85);
+}
+
+.settingsBtn {
+  background: none; border: none;
+  color: rgba(255,255,255,0.35);
+  font-size: 15px; cursor: pointer;
+  padding: 4px 6px; border-radius: 6px;
+  transition: all 0.2s;
+  -webkit-app-region: no-drag;
+}
+.settingsBtn:hover {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.7);
+}
+
+/* ── Main body (canvas + optional chat) ── */
+.mainBody {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ── Canvas ── */
+.canvasWrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ── Chat side panel ── */
+.chatSide {
+  width: 300px;
+  flex-shrink: 0;
+  border-left: 1px solid rgba(var(--accent-rgb),0.12);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideInChat 0.2s ease;
+}
+
+@keyframes slideInChat {
+  from { width: 0; opacity: 0 }
+  to   { width: 300px; opacity: 1 }
+}
+
+/* ── Self badge ── */
+.selfBadge {
+  position: absolute; bottom: 20px; left: 20px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px;
+  background: var(--bg-panel);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+.selfDot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0 }
+.selfName { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85) }
+.selfSub  { font-size: 10px; color: rgba(255,255,255,0.3); margin-left: 4px }
+
+/* ── Incoming call overlay ── */
+.incomingOverlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 50;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+
+.incomingGlow { position: absolute; inset: 0; pointer-events: none }
+
+.incomingCard {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  padding: 32px 40px 28px;
+  background: var(--bg-panel);
+  border: 1px solid rgba(var(--accent-rgb),0.2);
+  border-radius: 24px;
+  backdrop-filter: blur(24px);
+  box-shadow: 0 20px 80px rgba(0,0,0,0.7);
+  animation: cardPop 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes cardPop {
+  from { opacity: 0; transform: scale(0.85) translateY(20px) }
+  to   { opacity: 1; transform: scale(1)    translateY(0) }
+}
+
+.ringWrap {
+  position: relative; display: flex;
+  align-items: center; justify-content: center;
+  width: 150px; height: 150px; margin-bottom: 8px;
+}
+.ring {
+  position: absolute; border-radius: 50%; border: 1.5px solid;
+  opacity: 0; animation: ringPulse 1.8s ease-out infinite;
+}
+@keyframes ringPulse {
+  0%   { transform: scale(0.5); opacity: 0.8 }
+  100% { transform: scale(1.4); opacity: 0 }
+}
+.callerAvatarBig {
+  width: 64px; height: 64px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 24px;
+  color: rgba(0,0,0,0.7); z-index: 1;
+}
+.callerNameBig {
+  font-family: 'Exo 2', sans-serif; font-size: 20px; font-weight: 700;
+  color: rgba(255,255,255,0.95);
+}
+.callerSubBig {
+  font-family: 'Exo 2', sans-serif; font-size: 12px;
+  color: rgba(255,255,255,0.4); margin-bottom: 8px;
+}
+.incomingBtns { display: flex; gap: 16px; margin-top: 8px }
+
+.acceptBigBtn, .rejectBigBtn {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  width: 72px; padding: 12px 0 10px;
+  border-radius: 18px; border: none;
+  font-family: 'Exo 2', sans-serif; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s;
+}
+.acceptBigBtn span:first-child,
+.rejectBigBtn span:first-child { font-size: 22px }
+.acceptBigBtn {
+  background: linear-gradient(160deg, var(--call-accept), color-mix(in srgb, var(--call-accept) 70%, black));
+  color: rgba(200,255,220,0.95);
+  box-shadow: 0 4px 20px rgba(var(--accent-rgb),0.25);
+}
+.acceptBigBtn:hover { background: linear-gradient(160deg, color-mix(in srgb, var(--call-accept) 140%, white), var(--call-accept)); transform: translateY(-2px) }
+.rejectBigBtn {
+  background: linear-gradient(160deg, var(--call-reject), color-mix(in srgb, var(--call-reject) 70%, black));
+  color: rgba(255,210,210,0.95);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+}
+.rejectBigBtn:hover { background: linear-gradient(160deg, color-mix(in srgb, var(--call-reject) 140%, white), var(--call-reject)); transform: translateY(-2px) }
+
+/* ── Bottom call bar ── */
+.callBar {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 20px;
+  background: linear-gradient(180deg, var(--bg-title) 0%, var(--bg-title) 100%);
+  border-top: 1px solid rgba(var(--accent-rgb),0.2);
+  animation: slideUpBar 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.5);
+}
+@keyframes slideUpBar {
+  from { opacity: 0; transform: translateY(16px) }
+  to   { opacity: 1; transform: translateY(0) }
+}
+
+.callBarLeft {
+  display: flex; align-items: center; gap: 12px;
+  flex: 1; min-width: 0;
+}
+.callBarLabel {
+  font-family: 'Exo 2', sans-serif; font-size: 10px; font-weight: 600;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  color: rgba(var(--accent-rgb),0.7); white-space: nowrap;
+}
+.callBarAvatars { display: flex }
+.callBarAvatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 11px;
+  color: rgba(0,0,0,0.7);
+  border: 2px solid var(--bg-panel);
+  margin-left: -4px; flex-shrink: 0;
+}
+.callBarAvatar:first-child { margin-left: 0 }
+.callBarNames {
+  font-family: 'Exo 2', sans-serif; font-size: 12px;
+  color: var(--text-sub); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; max-width: 200px;
+}
+.callBarRight { display: flex; align-items: center; gap: 8px; flex-shrink: 0 }
+
+/* ── Chat button in call bar ── */
+.chatBarBtn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  color: rgba(255,255,255,0.55);
+  font-family: 'Exo 2', sans-serif; font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: all 0.2s;
+}
+.chatBarBtn:hover {
+  background: rgba(var(--accent-rgb),0.12);
+  border-color: rgba(var(--accent-rgb),0.3);
+  color: rgba(var(--accent-rgb),0.9);
+}
+.chatBarBtnActive {
+  background: rgba(var(--accent-rgb),0.18) !important;
+  border-color: rgba(var(--accent-rgb),0.45) !important;
+  color: rgba(var(--accent-rgb),0.95) !important;
+}
+
+.clearSelBtn {
+  background: none; border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; color: rgba(255,255,255,0.35);
+  font-size: 12px; padding: 5px 9px; cursor: pointer; transition: all 0.2s;
+}
+.clearSelBtn:hover {
+  border-color: rgba(255,80,80,0.4); color: rgba(255,100,100,0.7);
+  background: rgba(255,50,50,0.08);
+}
+
+.startCallBtn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 22px;
+  background: linear-gradient(135deg, var(--call-accept), color-mix(in srgb, var(--call-accept) 70%, black));
+  border: 1px solid rgba(var(--accent-rgb),0.35);
+  border-radius: 12px; color: rgba(200,255,220,0.95);
+  font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 4px 18px rgba(var(--accent-rgb),0.15);
+}
+.startCallBtn:hover {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--call-accept) 130%, white), var(--call-accept));
+  box-shadow: 0 4px 24px rgba(var(--accent-rgb),0.2);
+  transform: translateY(-1px);
+}
+.startCallBtn:active { transform: translateY(0) }
+.callIcon { font-size: 15px }

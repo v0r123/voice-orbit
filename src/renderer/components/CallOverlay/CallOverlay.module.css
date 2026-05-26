@@ -1,0 +1,223 @@
+.overlay {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-panel);
+  border: 1px solid rgba(var(--accent-rgb),0.3);
+  border-radius: 16px;
+  min-width: 260px;
+  max-width: 380px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(var(--accent-rgb),0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.header:hover {
+  background: rgba(var(--accent-rgb),0.05);
+}
+
+.callIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  letter-spacing: 0.5px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent2);
+  box-shadow: 0 0 8px var(--accent2);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+.count {
+  background: rgba(var(--accent-rgb),0.3);
+  color: #88aaff;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-size: 11px;
+}
+
+.expandBtn {
+  background: none;
+  border: none;
+  color: var(--text-sub);
+  cursor: pointer;
+  font-size: 10px;
+  padding: 2px 4px;
+}
+
+.body {
+  padding: 0 16px 16px;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.participants {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.participant {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Exo 2', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: rgba(0,0,0,0.7);
+  flex-shrink: 0;
+  transition: box-shadow 0.2s;
+}
+
+.avatar.speaking {
+  animation: speakPulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes speakPulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+
+.participantInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.participantName {
+  display: block;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 500;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.participantStatus {
+  font-size: 11px;
+  color: var(--text-sub);
+}
+
+.volumeRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.volIcon {
+  font-size: 11px;
+}
+
+.volumeSlider {
+  flex: 1;
+  height: 3px;
+  -webkit-appearance: none;
+  background: rgba(var(--accent-rgb),0.15);
+  border-radius: 2px;
+  outline: none;
+}
+
+.volumeSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color, #4488ff);
+  cursor: pointer;
+  box-shadow: 0 0 6px var(--color, var(--accent));
+}
+
+.volValue {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 10px;
+  color: var(--text-muted);
+  min-width: 28px;
+  text-align: right;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  border-top: 1px solid var(--border-soft);
+  padding-top: 14px;
+}
+
+.ctrlBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 20px;
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  background: var(--bg-card);
+  color: var(--text);
+  font-family: 'Exo 2', sans-serif;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ctrlBtn:hover {
+  background: rgba(var(--accent-rgb),0.1);
+  border-color: rgba(var(--accent-rgb),0.2);
+  color: white;
+}
+
+.ctrlBtn.muted {
+  border-color: rgba(255, 80, 80, 0.4);
+  background: rgba(255, 60, 60, 0.1);
+  color: #ff8888;
+}
+
+.ctrlBtn.endBtn {
+  border-color: rgba(255, 60, 60, 0.4);
+  background: rgba(255, 40, 40, 0.1);
+  color: #ff6666;
+}
+
+.ctrlBtn.endBtn:hover {
+  background: rgba(255, 40, 40, 0.25);
+  border-color: rgba(255, 60, 60, 0.7);
+  color: #ff8888;
+}
