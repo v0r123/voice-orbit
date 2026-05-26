@@ -32,9 +32,6 @@ No servers. No accounts. No internet required.
 
 ## 📸 Screenshots
 
-> *Place your screenshots in `docs/screenshots/` and uncomment the table below.*
-
-
 | Orbital Canvas | Group Call | Chat Panel |
 |:-:|:-:|:-:|
 | ![Canvas](docs/screenshots/canvas.jpg) | ![Call](docs/screenshots/call.jpg) | ![Chat](docs/screenshots/chat.jpg) |
@@ -42,18 +39,6 @@ No servers. No accounts. No internet required.
 | Settings & Themes | Incoming Call | Update Notification |
 |:-:|:-:|:-:|
 | ![Settings](docs/screenshots/settings.jpg) | ![Incoming](docs/screenshots/incoming.jpg) | ![Update](docs/screenshots/update.jpg) |
-
-
-<!-- ```
-docs/
-└── screenshots/
-    ├── canvas.jpg       ← orbital canvas with planets & rocket
-    ├── call.jpg         ← group call participant panel
-    ├── chat.jpg         ← chat drawer with messages
-    ├── settings.jpg     ← settings modal with theme picker
-    ├── incoming.jpg     ← incoming call notification
-    └── update.jpg       ← LAN auto-update banner
-``` -->
 
 ---
 
@@ -152,16 +137,6 @@ npm run build          # TypeScript + Vite compile
 npx electron-builder   # package into installer / portable
 ```
 
-### Multi-Instance Test (same PC)
-
-Three bat files launch separate instances on different port ranges:
-
-```bat
-test-launch\START-INSTANCE-1.bat
-test-launch\START-INSTANCE-2.bat
-test-launch\START-INSTANCE-3.bat
-```
-
 ### Build Multiple Versions for Update Testing
 
 ```bash
@@ -173,23 +148,6 @@ node scripts/build-test-versions.js 1.0.0 2.0.0 3.0.0
 ```
 
 Output: `release/test/<version>/VoiceOrbit.exe`
-
----
-
-## 🔧 Firewall
-
-VoiceOrbit registers Windows Firewall rules automatically on first run.  
-To register manually (run as **Administrator**):
-
-```bat
-test-launch\SETUP-FIREWALL-ADMIN.bat
-```
-
-| Port range | Protocol | Purpose |
-|-----------|----------|---------|
-| 45678 – 45685 | UDP | Peer discovery |
-| 45700 – 45750 | TCP | Signaling |
-| 45800 – 45810 | TCP | File transfer |
 
 ---
 
@@ -231,10 +189,6 @@ voice-orbit/
 │
 ├── scripts/
 │   └── build-test-versions.js   # Multi-version build automation
-│
-├── test-launch/                  # Multi-instance dev launchers
-│   ├── START-INSTANCE-{1,2,3}.bat
-│   └── SETUP-FIREWALL-ADMIN.bat
 │
 └── BUILD-TEST-VERSIONS.bat       # One-click test build (double-click)
 ```
