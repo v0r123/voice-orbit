@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700&display=swap');
+
 :root {
   --bg:          #080818;
   --bg-title:    rgba(6,10,22,0.97);
@@ -17,8 +19,6 @@
   --call-reject: #7e1e1e;
   --orbit-sun:   #ffd700;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700&display=swap');
 
 *, *::before, *::after {
   box-sizing: border-box;

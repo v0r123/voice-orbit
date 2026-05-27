@@ -18,29 +18,39 @@
     "dist": "npm run build && electron-builder",
     "dist:win": "npm run build && electron-builder --win",
     "build:update": "npm run build && node scripts/create-update-package.js",
-    "build:test-versions": "node scripts/build-test-versions.js"
+    "build:test-versions": "node scripts/build-test-versions.js",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "rebuild": "electron-rebuild -f -w better-sqlite3",
+    "postinstall": "electron-rebuild -f -w better-sqlite3 || true"
   },
   "dependencies": {
-    "uuid": "^9.0.0",
-    "adm-zip": "^0.5.10"
+    "@prisma/adapter-better-sqlite3": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "adm-zip": "^0.5.10",
+    "better-sqlite3": "^12.10.0",
+    "prisma": "^7.8.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.0.0",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "@types/uuid": "^9.0.0",
     "@vitejs/plugin-react": "^4.0.0",
+    "archiver": "^6.0.0",
     "concurrently": "^8.0.0",
     "cross-env": "^7.0.3",
     "electron": "^28.0.0",
     "electron-builder": "^24.0.0",
+    "electron-rebuild": "^3.2.9",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "typescript": "^5.0.0",
     "vite": "^5.0.0",
     "wait-on": "^7.0.0",
-    "zustand": "^4.0.0",
-    "archiver": "^6.0.0"
+    "zustand": "^4.0.0"
   },
   "build": {
     "appId": "com.voiceorbit.app",
@@ -67,7 +77,25 @@
     "files": [
       "dist/**/*",
       "node_modules/**/*",
-      "package.json"
+      "package.json",
+      "node_modules/better-sqlite3/**/*",
+      "!data/**"
+    ],
+    "asarUnpack": [
+      "node_modules/better-sqlite3/**/*",
+      "node_modules/@prisma/client/**/*",
+      "node_modules/@prisma/adapter-better-sqlite3/**/*",
+      "node_modules/.prisma/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "prisma",
+        "to": "prisma"
+      },
+      {
+        "from": "prisma.config.ts",
+        "to": "prisma.config.ts"
+      }
     ]
   }
 }

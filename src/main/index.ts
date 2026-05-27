@@ -5,6 +5,8 @@ import { SignalingServer } from './signaling'
 import { FileServer } from './fileServer'
 import { setupIpcHandlers } from './ipc'
 import { ensureFirewallRules } from './firewall'
+import { runMigrations } from './db/migrate'
+import { closeDb } from './db/client'
 
 let mainWindow: BrowserWindow | null = null
 let discoveryService: DiscoveryService | null = null
@@ -58,6 +60,7 @@ app.whenReady().then(async () => {
   await fileServer.start()
   discoveryService.filePort = fileServer.getPort()
 
+  // Register IPC handlers immediately — must not be blocked by DB init
   setupIpcHandlers(ipcMain, win, discoveryService, signalingServer, fileServer)
 
   discoveryService.on('peer-found',   (peer)   => win.webContents.send('peer-found',   peer))
@@ -67,12 +70,18 @@ app.whenReady().then(async () => {
   // File transfer progress events → renderer
   fileServer.on('progress', (data) => win.webContents.send('file-progress', data))
   fileServer.on('sent',     (data) => win.webContents.send('file-sent',     data))
+
+  // Init SQLite DB in background — IPC handlers gracefully handle DB not ready yet
+  runMigrations().catch(err => {
+    console.error('[DB] Migration failed — app continues without persistence:', err.message)
+  })
 })
 
-app.on('before-quit', () => {
+app.on('before-quit', async () => {
   discoveryService?.stopWithBye()
   signalingServer?.stop()
   fileServer?.stop()
+  await closeDb()
 })
 
 app.on('window-all-closed', () => {

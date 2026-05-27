@@ -94,6 +94,8 @@ export default function App() {
       }
       console.log('[Settings] Loaded from disk:', merged.theme, 'scale:', merged.uiScale)
     })
+    // Load chat history after settings
+    useStore.getState().loadHistory()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -110,6 +112,16 @@ export default function App() {
     }, 800)
     return () => { if (saveTimer.current) clearTimeout(saveTimer.current) }
   }, [store.settings, store.localNicknames])
+
+  // Auto-save history (debounced 2s — heavier operation)
+  const historyTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    if (historyTimer.current) clearTimeout(historyTimer.current)
+    historyTimer.current = setTimeout(() => {
+      useStore.getState().saveHistory()
+    }, 2000)
+    return () => { if (historyTimer.current) clearTimeout(historyTimer.current) }
+  }, [store.messages, store.chatSessions, store.fileTransfers])
 
   // Apply theme on mount and when it changes
   useEffect(() => {

@@ -428,28 +428,114 @@ export function setupIpcHandlers(
     } catch { return null }
   })
 
-  // ── Persistent settings ──────────────────────────────────────
-  const settingsPath = path.join(app.getPath('userData'), 'settings.json')
-
-  ipcMain.handle('settings-load', () => {
+  // ── SQLite / Prisma — settings ────────────────────────────────
+  ipcMain.handle('settings-load', async () => {
     try {
-      if (fs.existsSync(settingsPath)) {
-        return JSON.parse(fs.readFileSync(settingsPath, 'utf8'))
-      }
+      const { loadAppSettings } = await import('./db/repository')
+      return await loadAppSettings()
     } catch (err: any) {
-      console.warn('[Settings] Failed to load:', err.message)
+      console.warn('[Settings] DB load failed:', err.message)
+      return null
     }
-    return null
   })
 
-  ipcMain.handle('settings-save', (_e, data: object) => {
+  ipcMain.handle('settings-save', async (_e, data: object) => {
     try {
-      fs.writeFileSync(settingsPath, JSON.stringify(data, null, 2), 'utf8')
+      const { saveAppSettings } = await import('./db/repository')
+      await saveAppSettings(data)
       return true
     } catch (err: any) {
-      console.warn('[Settings] Failed to save:', err.message)
+      console.warn('[Settings] DB save failed:', err.message)
       return false
     }
+  })
+
+  // ── SQLite / Prisma — chat history ────────────────────────────
+  ipcMain.handle('history-load', async () => {
+    try {
+      const { loadAllSessions, loadAllMessages, loadFileTransfers } = await import('./db/repository')
+      const [sessions, messages, transfers] = await Promise.all([
+        loadAllSessions(),
+        loadAllMessages(),
+        loadFileTransfers(),
+      ])
+      return { sessions, messages, transfers }
+    } catch (err: any) {
+      console.warn('[History] DB load failed:', err.message)
+      return null
+    }
+  })
+
+  ipcMain.handle('history-save', async (_e, data: { messages: any[]; sessions: any[]; transfers: any[] }) => {
+    try {
+      const {
+        upsertSession, insertMessage, upsertFileTransfer,
+      } = await import('./db/repository')
+
+      // Upsert all sessions
+      for (const s of data.sessions ?? []) {
+        await upsertSession(s)
+      }
+      // Insert new messages (upsert ignores duplicates)
+      for (const m of data.messages ?? []) {
+        await insertMessage(m)
+      }
+      // Upsert completed file transfers
+      for (const t of (data.transfers ?? []).filter((t: any) =>
+        t.status === 'done' || t.status === 'rejected'
+      )) {
+        await upsertFileTransfer(t)
+      }
+      return true
+    } catch (err: any) {
+      console.warn('[History] DB save failed:', err.message)
+      return false
+    }
+  })
+
+  // Future pkt 5: full-text search
+  ipcMain.handle('history-search', async (_e, query: string) => {
+    try {
+      const { searchMessages } = await import('./db/repository')
+      return await searchMessages(query)
+    } catch (err: any) {
+      console.warn('[History] Search failed:', err.message)
+      return []
+    }
+  })
+
+  // Future pkt 6: edit/delete messages
+  ipcMain.handle('message-edit', async (_e, id: string, newText: string) => {
+    try {
+      const { editMessage } = await import('./db/repository')
+      await editMessage(id, newText)
+      return true
+    } catch { return false }
+  })
+
+  ipcMain.handle('message-delete', async (_e, id: string) => {
+    try {
+      const { deleteMessage } = await import('./db/repository')
+      await deleteMessage(id)
+      return true
+    } catch { return false }
+  })
+
+  // Future pkt 3: reactions
+  ipcMain.handle('reaction-add', async (_e, messageId: string, fromId: string, emoji: string) => {
+    try {
+      const { addReaction } = await import('./db/repository')
+      await addReaction(messageId, fromId, emoji)
+      return true
+    } catch { return false }
+  })
+
+  ipcMain.handle('reaction-remove', async (_e, messageId: string, fromId: string, emoji: string) => {
+    try {
+      const { removeReaction } = await import('./db/repository')
+      await removeReaction(messageId, fromId, emoji)
+      return true
+    } catch { return false }
   })
 
   // Open file in explorer

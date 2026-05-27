@@ -73,6 +73,8 @@ interface AppStore {
   openOrCreateGroup: (peerIds: string[], peerNames: string[]) => string
   getOrCreateSession: (id: string) => ChatSession | undefined
   loadSettings: () => Promise<void>
+  loadHistory: () => Promise<void>
+  saveHistory: () => void
   clearCall: () => void
 }
 
@@ -319,6 +321,56 @@ export const useStore = create<AppStore>((set) => ({
       useStore.setState({ localNicknames: new Map(Object.entries(saved.nicknames)) })
     }
     console.log('[Settings] Loaded from disk')
+  },
+
+  // ── History persistence ───────────────────────────────────
+  loadHistory: async () => {
+    const saved = await window.electronAPI?.historyLoad()
+    if (!saved) return
+    // Restore messages
+    if (Array.isArray(saved.messages) && saved.messages.length > 0) {
+      useStore.setState({ messages: saved.messages })
+    }
+    // Restore chat sessions
+    if (Array.isArray(saved.sessions) && saved.sessions.length > 0) {
+      const sessionMap = new Map<string, ChatSession>()
+      for (const s of saved.sessions) sessionMap.set(s.id, s)
+      useStore.setState({ chatSessions: sessionMap })
+    }
+    // Restore file transfers (done/rejected only — skip pending/transferring)
+    if (Array.isArray(saved.transfers) && saved.transfers.length > 0) {
+      const transferMap = new Map<string, FileTransfer>()
+      for (const t of saved.transfers) {
+        if (t.status === 'done' || t.status === 'rejected') {
+          transferMap.set(t.fileId, t)
+        }
+      }
+      useStore.setState({ fileTransfers: transferMap })
+    }
+    console.log(`[History] Loaded: ${saved.messages?.length ?? 0} msgs, ${saved.sessions?.length ?? 0} sessions`)
+  },
+
+  saveHistory: () => {
+    const state = useStore.getState()
+    // Keep last 500 messages per chat session (trim older ones)
+    const MAX_PER_CHAT = 500
+    const countByChat = new Map<string, number>()
+    const trimmed = [...state.messages].reverse().filter(m => {
+      const count = countByChat.get(m.chatId) ?? 0
+      if (count >= MAX_PER_CHAT) return false
+      countByChat.set(m.chatId, count + 1)
+      return true
+    }).reverse()
+
+    // Only save completed transfers (skip pending/in-progress)
+    const transfers = Array.from(state.fileTransfers.values() as Iterable<FileTransfer>)
+      .filter(t => t.status === 'done' || t.status === 'rejected')
+      // Don't save base64 preview data — it bloats the file
+      .map(t => ({ ...t, previewData: undefined }))
+
+    const sessions = Array.from(state.chatSessions.values() as Iterable<ChatSession>)
+
+    window.electronAPI?.historySave({ messages: trimmed, sessions, transfers })
   },
 
   updateSettings: (s) =>

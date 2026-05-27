@@ -49,6 +49,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getAppVersion: () => ipcRenderer.invoke('get-app-version'),
   settingsLoad: () => ipcRenderer.invoke('settings-load'),
   settingsSave: (data) => ipcRenderer.invoke('settings-save', data),
+  historyLoad: () => ipcRenderer.invoke('history-load'),
+  historySave: (data) => ipcRenderer.invoke('history-save', data),
+  historySearch: (query) => ipcRenderer.invoke('history-search', query),
+  messageEdit: (id, text) => ipcRenderer.invoke('message-edit', id, text),
+  messageDelete: (id) => ipcRenderer.invoke('message-delete', id),
+  reactionAdd: (messageId, fromId, emoji) => ipcRenderer.invoke('reaction-add', messageId, fromId, emoji),
+  reactionRemove: (messageId, fromId, emoji) => ipcRenderer.invoke('reaction-remove', messageId, fromId, emoji),
   getSelfExecutable: () => ipcRenderer.invoke('get-self-executable'),
   applyUpdate: (zipPath) => ipcRenderer.invoke('apply-update', zipPath),
   downloadUpdate: (peerIp, peerFilePort, fileId, fileName, fileSize) =>

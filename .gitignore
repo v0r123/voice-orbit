@@ -1,4 +1,14 @@
-node_modules
-dist
-release
-test-launch
+node_modules/
+dist/
+release/
+
+# Local data (DB + settings)
+data/
+
+# Prisma generated client
+src/main/generated/
+
+# Build artifacts
+*.js.map
+
+test-launch/
